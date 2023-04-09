@@ -1,7 +1,7 @@
 {
-  "name": "cloudflare-workers-typescript",
+  "name": "match-generator",
   "version": "1.0.0",
-  "description": "Cloudflare Workers TypeScript setup",
+  "description": "REST API that generates matches for guess-the-anime",
   "main": "build/worker.js",
   "homepage": "https://github.com/karanpratapsingh/cloudflare-workers-typescript#readme",
   "license": "MIT",
@@ -12,11 +12,12 @@
     "type": "git",
     "url": "git+https://github.com/karanpratapsingh/cloudflare-workers-typescript.git"
   },
-  "keywords": ["cloudflare", "typescript"],
+  "keywords": [
+    "typescript"
+  ],
   "author": {
-    "name": "Karan Pratap Singh",
-    "email": "contact@karanpratapsingh.com",
-    "url": "https://karanpratapsingh.com"
+    "name": "Manuel Mena",
+    "email": "manuelmena1993@gmail.com"
   },
   "scripts": {
     "dev": "npx wrangler dev",
@@ -25,7 +26,7 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "3.3.0",
-    "@cloudflare/wrangler": "1.19.6",
+    "@cloudflare/wrangler": "^1.19.6",
     "esbuild": "0.14.8",
     "typescript": "4.5.4"
   }
