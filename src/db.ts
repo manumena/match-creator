@@ -1,9 +1,10 @@
 import { Connection, connect } from '@planetscale/database'
 
 const config = {
+  database: 'otaku-db',
+  username: '85ozcgqdw0yi3ukhvilq',
   host: 'aws.connect.psdb.cloud',
-  username: 'my8rosgp4sj0w579mbxy',
-  password: 'pscale_pw_sLIvnvEaktswRFx4F4fZaIeRX7qbGQl2BHqd0lexF8b'
+  password: 'pscale_pw_SfiFzJQlax5q9tzdVV3s3nbQ7viGzuz9CUAqaxERNVh'
 }
 
 const conn: Connection = connect(config)

@@ -5,16 +5,20 @@ const QUERY_GET_TOTAL_AMOUNT_OF_SONGS = 'SELECT COUNT(*) FROM songs;';
 const QUERY_GET_SONGS_BY_ID = 'SELECT * FROM songs WHERE {};';
 
 export async function generateMatch() {
-  // Get total amount of songs
-  let queryResponse = await conn.execute(QUERY_GET_TOTAL_AMOUNT_OF_SONGS) as any
-  const totalSongs = parseInt(queryResponse.rows[0]['count(*)'])
-
-  // Get random ids
-  const randomIds = getRandomNumbers(3, totalSongs)
-
-  // Use random ids to get the songs
-  const selectedSongsResponse = await conn.execute(buildSelectedIdsQuery(randomIds))
-  return selectedSongsResponse.rows
+  try {
+    // Get total amount of songs
+    let queryResponse = await conn.execute(QUERY_GET_TOTAL_AMOUNT_OF_SONGS) as any
+    const totalSongs = parseInt(queryResponse.rows[0]['count(*)'])
+    
+    // Get random ids
+    const randomIds = getRandomNumbers(3, totalSongs)
+  
+    // Use random ids to get the songs
+    const selectedSongsResponse = await conn.execute(buildSelectedIdsQuery(randomIds))
+    return selectedSongsResponse.rows
+  } catch (error: any) {
+    console.error(error.message)
+  }
 }
 
 function buildSelectedIdsQuery(ids: number[]) {
