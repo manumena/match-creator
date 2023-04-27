@@ -1,12 +1,13 @@
-import { Connection, connect } from '@planetscale/database'
+import { connect } from '@planetscale/database'
+import { Env } from './env'
 
-const config = {
-  database: 'otaku-db',
-  username: '85ozcgqdw0yi3ukhvilq',
-  host: 'aws.connect.psdb.cloud',
-  password: 'pscale_pw_SfiFzJQlax5q9tzdVV3s3nbQ7viGzuz9CUAqaxERNVh'
+function getDBConnection(env: Env) {
+  const config = {
+    username: env.DB_USERNAME,
+    host: env.DB_HOST,
+    password: env.DB_PASSWORD
+  }
+  return connect(config)
 }
 
-const conn: Connection = connect(config)
-
-export { conn }
+export { getDBConnection }

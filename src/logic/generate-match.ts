@@ -1,11 +1,16 @@
+import { Connection, connect } from "@planetscale/database";
+import { getDBConnection } from "../db";
+import { Env } from "../env";
 import { getRandomNumbers } from "./random";
-import { conn } from "../db";
 
 const QUERY_GET_TOTAL_AMOUNT_OF_SONGS = 'SELECT COUNT(*) FROM songs;';
 const QUERY_GET_SONGS_BY_ID = 'SELECT * FROM songs WHERE {};';
 
-export async function generateMatch() {
+export async function generateMatch(env: Env) {
   try {
+    // Get database connection
+    const conn = getDBConnection(env)
+
     // Get total amount of songs
     let queryResponse = await conn.execute(QUERY_GET_TOTAL_AMOUNT_OF_SONGS) as any
     const totalSongs = parseInt(queryResponse.rows[0]['count(*)'])
