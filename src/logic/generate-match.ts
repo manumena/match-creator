@@ -6,7 +6,7 @@ import { getRandomNumbers } from "./random";
 const QUERY_GET_TOTAL_AMOUNT_OF_SONGS = 'SELECT COUNT(*) FROM songs;';
 const QUERY_GET_SONGS_BY_ID = 'SELECT * FROM songs WHERE {};';
 
-export async function generateMatch(env: Env) {
+export async function generateMatch(env: Env, amount?: number) {
   try {
     // Get database connection
     const conn = getDBConnection(env)
@@ -16,7 +16,7 @@ export async function generateMatch(env: Env) {
     const totalSongs = parseInt(queryResponse.rows[0]['count(*)'])
     
     // Get random ids
-    const randomIds = getRandomNumbers(3, totalSongs)
+    const randomIds = getRandomNumbers(amount ? amount : 5, totalSongs)
   
     // Use random ids to get the songs
     const selectedSongsResponse = await conn.execute(buildSelectedIdsQuery(randomIds))
