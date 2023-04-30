@@ -51,7 +51,7 @@ export async function generateMatch(env: Env, options: MatchOptions) {
         const allSongs = queryResponse.rows
 
         // Select a song at random
-        return getRandomElementsFromList(allSongs, 1)
+        return getRandomElementsFromList(allSongs, 1)[0]
       })
       response = await Promise.all(randomSongsPromises)
     }
