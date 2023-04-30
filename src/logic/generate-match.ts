@@ -1,32 +1,67 @@
-import { Connection, connect } from "@planetscale/database";
 import { getDBConnection } from "../db";
 import { Env } from "../env";
-import { getRandomNumbers } from "./random";
+import { getRandomElementsFromList, getRandomNumbers } from "./random";
 
-const QUERY_GET_TOTAL_AMOUNT_OF_SONGS = 'SELECT COUNT(*) FROM songs;';
-const QUERY_GET_SONGS_BY_ID = 'SELECT * FROM songs WHERE {};';
+interface MatchOptions {
+  amount?: number,
+  repeatAnimes?: boolean
+}
 
-export async function generateMatch(env: Env, amount?: number) {
+const QUERY_GET_TOTAL_AMOUNT_OF_SONGS = 'SELECT COUNT(*) FROM songs;'
+const QUERY_GET_SONGS_BY_CONDITION = 'SELECT * FROM songs WHERE {};'
+const QUERY_GET_EVERY_ANIME = 'SELECT DISTINCT anime FROM songs;'
+
+export async function generateMatch(env: Env, options: MatchOptions) {
+  let { amount, repeatAnimes } = options
+  let response
+
+  // Set default options
+  if(!amount) 
+    amount = env.DEFAULT_SONGS_AMOUNT
+  if(!repeatAnimes)
+    repeatAnimes = (env.DEFAULT_REPEAT_ANIMES == 'true')
+
   try {
     // Get database connection
     const conn = getDBConnection(env)
 
-    // Get total amount of songs
-    let queryResponse = await conn.execute(QUERY_GET_TOTAL_AMOUNT_OF_SONGS) as any
-    const totalSongs = parseInt(queryResponse.rows[0]['count(*)'])
-    
-    // Get random ids
-    const randomIds = getRandomNumbers(amount ? amount : 5, totalSongs)
-  
-    // Use random ids to get the songs
-    const selectedSongsResponse = await conn.execute(buildSelectedIdsQuery(randomIds))
-    return selectedSongsResponse.rows
+    if (repeatAnimes) {
+      // Get total amount of songs
+      let queryResponse = await conn.execute(QUERY_GET_TOTAL_AMOUNT_OF_SONGS) as any
+      const totalSongs = parseInt(queryResponse.rows[0]['count(*)'])
+
+      // Get random ids
+      const randomIds = getRandomNumbers(amount, 1, totalSongs)
+
+      // Use random ids to get the songs
+      const selectedSongsResponse = await conn.execute(buildQuerySongsByIds(randomIds))
+      response = selectedSongsResponse.rows
+    } else {
+      // Get a list of every anime
+      let queryResponse = await conn.execute(QUERY_GET_EVERY_ANIME) as any
+      const allAnimes = queryResponse.rows.map((row: { anime: string }) => row.anime)
+
+      // Choose random animes from it
+      const randomAnimes = getRandomElementsFromList(allAnimes, amount)
+
+      // Choose random songs from selected animes
+      const randomSongsPromises = randomAnimes.map(async anime => {
+        // Get all songs for that anime
+        queryResponse = await conn.execute(buildQuerySongsByAnime(anime)) as any
+        const allSongs = queryResponse.rows
+
+        // Select a song at random
+        return getRandomElementsFromList(allSongs, 1)
+      })
+      response = await Promise.all(randomSongsPromises)
+    }
+    return response
   } catch (error: any) {
     console.error(error.message)
   }
 }
 
-function buildSelectedIdsQuery(ids: number[]) {
+function buildQuerySongsByIds(ids: number[]) {
   // Set first id
   let condition = `id = ${ids[0]}`
 
@@ -36,5 +71,10 @@ function buildSelectedIdsQuery(ids: number[]) {
   }
 
   // Replace the condition in the query template
-  return QUERY_GET_SONGS_BY_ID.replace('{}', condition)
+  return QUERY_GET_SONGS_BY_CONDITION.replace('{}', condition)
+}
+
+function buildQuerySongsByAnime(anime: string) {
+  const sanitizedAnime = anime.replaceAll(`'`, `\\'`)
+  return QUERY_GET_SONGS_BY_CONDITION.replace('{}', `anime = '${sanitizedAnime}'`)
 }

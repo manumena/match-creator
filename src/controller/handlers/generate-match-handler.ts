@@ -3,8 +3,12 @@ import { generateMatch } from "../../logic/generate-match";
 import { Env } from "../../env";
 
 const generateMatchHandler: RouterHandler<Env> = async ({ res, req, env }) => {
-  const queryParams = req.query
-  const response = await generateMatch(env, parseInt(queryParams.amount))
+  const options = {
+    amount: parseInt(req.query.amount),
+    repeatAnimes: (req.query.repeatAnimes == 'true')
+  }
+
+  const response = await generateMatch(env, options)
   res.status = 200
   res.body = {
     match: response
