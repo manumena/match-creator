@@ -4,7 +4,7 @@ export function getRandomNumbers(quantity: number, min: number, max: number): nu
     // Generate a candidate until is not already included in the results
     let candidate
     do {
-      candidate = Math.floor(Math.random() * max) + min
+      candidate = Math.floor(Math.random() * (max + 1)) + min
     } while (result.includes(candidate))
     
     // Add candidate to results
