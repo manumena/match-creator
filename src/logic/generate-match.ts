@@ -27,19 +27,20 @@ export async function generateMatch(env: Env, options: MatchOptions) {
 
     if (repeatAnimes) {
       // Get total amount of songs
-      let queryResponse = await conn.execute(QUERY_GET_TOTAL_AMOUNT_OF_SONGS) as any
-      const totalSongs = parseInt(queryResponse.rows[0]['count(*)'])
+      const queryResponse = await conn(QUERY_GET_TOTAL_AMOUNT_OF_SONGS)
+      const totalSongs = queryResponse.rowCount
 
       // Get random ids
       const randomIds = getRandomNumbers(amount, 1, totalSongs)
+      console.log(randomIds)
 
       // Use random ids to get the songs
-      const selectedSongsResponse = await conn.execute(buildQuerySongsByIds(randomIds))
-      response = selectedSongsResponse.rows
+      const selectedSongsResponse = await conn(buildQuerySongsByIds(randomIds))
+      response = selectedSongsResponse
     } else {
       // Get a list of every anime
-      let queryResponse = await conn.execute(QUERY_GET_EVERY_ANIME) as any
-      const allAnimes = queryResponse.rows.map((row: { anime: string }) => row.anime)
+      let queryResponse = await conn(QUERY_GET_EVERY_ANIME)
+      const allAnimes = queryResponse.rows.map((row) => row.anime)
 
       // Choose random animes from it
       const randomAnimes = getRandomElementsFromList(allAnimes, amount)
@@ -47,7 +48,7 @@ export async function generateMatch(env: Env, options: MatchOptions) {
       // Choose random songs from selected animes
       const randomSongsPromises = randomAnimes.map(async anime => {
         // Get all songs for that anime
-        queryResponse = await conn.execute(buildQuerySongsByAnime(anime)) as any
+        queryResponse = await conn(buildQuerySongsByAnime(anime))
         const allSongs = queryResponse.rows
 
         // Select a song at random

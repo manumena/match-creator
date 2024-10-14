@@ -1,13 +1,11 @@
-import { connect } from '@planetscale/database'
 import { Env } from './env'
+import { neon } from '@neondatabase/serverless'
 
 function getDBConnection(env: Env) {
-  const config = {
-    username: env.DB_USERNAME,
-    host: env.DB_HOST,
-    password: env.DB_PASSWORD
-  }
-  return connect(config)
+  return neon(
+    `postgresql://${env.DB_USERNAME}:${env.DB_PASSWORD}@${env.DB_HOST}/${env.DATABASE}?sslmode=require`,
+    { fullResults: true }
+  )
 }
 
 export { getDBConnection }
