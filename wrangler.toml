@@ -1,4 +1,4 @@
-name = "animasters"
+name = "match-generator"
 main = "src/index.ts"
 account_id = '8a93337e5cf183625e3ce2b4ffe43284'
 workers_dev = true
