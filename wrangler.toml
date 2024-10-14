@@ -1,15 +1,12 @@
-name = "match-generator"
-type = "javascript"
-route = ''
-zone_id = ''
-account_id = ''
-usage_model = ''
-compatibility_flags = []
+name = "animasters"
+main = "src/index.ts"
+account_id = '8a93337e5cf183625e3ce2b4ffe43284'
 workers_dev = true
 compatibility_date = "2023-04-08"
 
-[build]
-command = "npm run build"
+[env.production.vars]
+DEFAULT_SONGS_AMOUNT = "10"
+DEFAULT_REPEAT_ANIMES = "false"
 
-[build.upload]
-format = "service-worker"
+[observability]
+enabled = true
