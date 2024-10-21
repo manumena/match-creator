@@ -78,6 +78,6 @@ function buildQuerySongsByIds(ids: number[]) {
 }
 
 function buildQuerySongsByAnime(anime: string) {
-  const sanitizedAnime = anime.replaceAll(`'`, `\\'`)
+  const sanitizedAnime = anime.replaceAll(`'`, `''`)
   return QUERY_GET_SONGS_BY_CONDITION.replace('{}', `anime = '${sanitizedAnime}'`)
 }
