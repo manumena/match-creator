@@ -14,7 +14,10 @@ const QUERY_GET_EVERY_ANIME = 'SELECT DISTINCT anime FROM songs;'
 export async function generateMatch(env: Env, options: MatchOptions) {
   let { amount, repeatAnimes } = options
   let response
+  
+  // Log parameters
   console.log('env', env, 'options', options)
+
   // Set default options
   if(!amount) 
     amount = env.DEFAULT_SONGS_AMOUNT
