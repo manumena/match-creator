@@ -5,6 +5,7 @@ workers_dev = true
 compatibility_date = "2023-04-08"
 
 [env.production.vars]
+DATABASE = "animasters"
 DEFAULT_SONGS_AMOUNT = "10"
 DEFAULT_REPEAT_ANIMES = "false"
 
