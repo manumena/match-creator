@@ -14,7 +14,7 @@ const QUERY_GET_EVERY_ANIME = 'SELECT DISTINCT anime FROM songs;'
 export async function generateMatch(env: Env, options: MatchOptions) {
   let { amount, repeatAnimes } = options
   let response
-
+  console.log('env', env, 'options', options)
   // Set default options
   if(!amount) 
     amount = env.DEFAULT_SONGS_AMOUNT
@@ -32,7 +32,6 @@ export async function generateMatch(env: Env, options: MatchOptions) {
 
       // Get random ids
       const randomIds = getRandomNumbers(amount, 1, totalSongs)
-      console.log(randomIds)
 
       // Use random ids to get the songs
       const selectedSongsResponse = await conn(buildQuerySongsByIds(randomIds))
